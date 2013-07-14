@@ -125,7 +125,6 @@ Loop, {
 	GuiControl,,AxisValueOut, % axis
 	time_on := round(axis * 10, 2)
 	time_on := time_on / FireDivider
-	tooltip, % FireDivider
 	GuiControl,,CurrFireRate, % round(time_on)
 	
 	; Check that the amount of time we need to hold the button is more than the minimum delay
@@ -171,7 +170,6 @@ reset_vars:
 	
 	basetime := 0
 	tick_rate := 0
-	tooltip,
 	return
 
 send_key_down(){
@@ -195,7 +193,6 @@ send_key_up(){
 	Send % "{" fire_sequence[fire_cur] " up}"
 	
 	fire_cur := fire_cur + 1
-	tooltip, % fire_cur " " fire_max
 	if (fire_cur > fire_max){
 		fire_cur := 1
 	}
@@ -232,8 +229,7 @@ option_changed_hook(){
 	}
 	
 	; Reset allowed_fire if we enabled/disabled limit app
-	allowed_fire := .config_get_default_app_on()
-	
+	allowed_fire := !ADHD.config_get_default_app_on()
 	fire_cur := 1
 	Gosub, reset_vars
 	
