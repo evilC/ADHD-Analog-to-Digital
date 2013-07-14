@@ -69,13 +69,8 @@ Gui, Add, Edit, xp+120 yp-2 W50 R1 vAxisValueOut Disabled,
 ; End GUI creation section
 ; ============================================================================================
 
-
-ADHD.finish_startup()
-
 ; The time a game needs to recognise a key down
 min_delay := 50	
-
-allowed_fire := 1
 
 ; The fraction of the delay time to run as a "clock"
 ; Should probably be at least 2
@@ -83,6 +78,10 @@ loop_time := min_delay / 2
 time_on := 0
 button_down := 0
 basetime := 0
+
+allowed_fire := 1
+
+ADHD.finish_startup()
 
 
 Loop, {
@@ -128,9 +127,7 @@ Loop, {
 			if (A_TickCount >= basetime + min_delay){
 				; LEAVE basetime as the time when key was last pressed
 				if (time_on != 1000){
-					button_down := 0
-					Send {%KeyToPress% up}
-					;soundbeep, 750, 10
+					send_key_up()
 				}
 			}
 			
@@ -138,13 +135,10 @@ Loop, {
 			; Process DOWN
 			; Wait for time from last press, plus the tick rate, ?plus the amount delayed?
 			if (A_TickCount >= basetime + tick_rate){
-				button_down := 1
-				; Set basetime to time when we last pressed
-				basetime := A_TickCount
 				if (allowed_fire){
-					;Send down
-					Send {%KeyToPress% down}
-					;soundbeep, 500, 10
+					; Set basetime to time when we last pressed
+					basetime := A_TickCount
+					send_key_down()
 				}
 				
 			}
@@ -159,8 +153,7 @@ return
 reset_vars:
 	time_on := 0
 	if (button_down){
-		Send {%KeyToPress% up}
-		button_down := 0
+		send_key_up()
 	}
 	
 	basetime := 0
@@ -168,6 +161,34 @@ reset_vars:
 	tooltip,
 	return
 
+send_key_down(){
+	global fire_cur
+	global fire_max
+	global fire_sequence
+	global button_down
+	
+	button_down := 1
+	Send % "{" fire_sequence[fire_cur] " down}"
+
+}
+	
+send_key_up(){
+	global fire_cur
+	global fire_max
+	global fire_sequence
+	global button_down
+
+	button_down := 0
+	Send % "{" fire_sequence[fire_cur] " up}"
+	
+	fire_cur := fire_cur + 1
+	tooltip, % fire_cur " " fire_max
+	if (fire_cur > fire_max){
+		fire_cur := 1
+	}
+
+}
+	
 app_active_hook(){
 	global allowed_fire
 	allowed_fire := 1
@@ -183,10 +204,24 @@ app_inactive_hook(){
 option_changed_hook(){
 	global ADHD
 	global allowed_fire
+	global KeyToPress
+	global fire_sequence
+	global fire_cur
+	global fire_max
+	
+	fire_max := 0
+	StringSplit, tmp, KeyToPress, `,
+	fire_sequence := []
+	Loop, % tmp0
+	{
+		fire_max := fire_max + 1
+		fire_sequence[A_index] := tmp%A_Index%
+	}
 	
 	; Reset allowed_fire if we enabled/disabled limit app
 	allowed_fire := .config_get_default_app_on()
 	
+	fire_cur := 1
 	Gosub, reset_vars
 	
 	
