@@ -53,9 +53,9 @@ ADHD.gui_add("CheckBox", "InvertAxis", "xp+60  yp+5", "Invert Axis", 0)
 Gui, Add, Text, x5 yp+30, Use Half Axis
 ADHD.gui_add("DropDownList", "HalfAxis", "xp+120 yp-5 W50", "None|Low|High", "None")
 
-Gui, Add, Text, x5 yp+30, Key to press
-ADHD.gui_add("Edit", "KeyToPress", "xp+120 yp-5 W50", "", "Space")
-Gui, Add, Text, xp+70 yp+5 Disabled, AHK key name. ie "Space" not " "
+Gui, Add, Text, x5 yp+30, Fire Sequence
+ADHD.gui_add("Edit", "FireSequence", "xp+120 yp-5 W50", "", "Space")
+Gui, Add, Text, xp+70 yp+5 Disabled, AHK key names. ie "Space" not " "
 
 
 Gui, Add, Text, x5 yp+25, Current axis value
@@ -204,13 +204,13 @@ app_inactive_hook(){
 option_changed_hook(){
 	global ADHD
 	global allowed_fire
-	global KeyToPress
+	global FireSequence
 	global fire_sequence
 	global fire_cur
 	global fire_max
 	
 	fire_max := 0
-	StringSplit, tmp, KeyToPress, `,
+	StringSplit, tmp, FireSequence, `,
 	fire_sequence := []
 	Loop, % tmp0
 	{
