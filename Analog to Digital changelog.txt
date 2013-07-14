@@ -4,6 +4,6 @@ Key:
 = : Change / Fix
 + : Added feature
 
-1.0 14th Jul 2013
-= Initial release
+1.1 14th Jul 2013
+= Initial public release
 

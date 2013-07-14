@@ -15,7 +15,7 @@ SetKeyDelay, 0, 50
 
 ; Stuff for the About box
 
-ADHD.config_about({name: "Analog to Digital", version: 1.0, author: "evilC", link: "<a href=""http://evilc.com/proj/adhd"">Homepage</a>"})
+ADHD.config_about({name: "Analog to Digital", version: 1.1, author: "evilC", link: "<a href=""http://evilc.com/proj/adhd"">Homepage</a>"})
 ; The default application to limit hotkeys to.
 ; Starts disabled by default, so no danger setting to whatever you want
 ADHD.config_default_app("CryENGINE")
@@ -108,7 +108,6 @@ Loop, {
 		if (axis >= 50){
 			; Convert from 50-100 to 0-100
 			axis := (axis - 50) * 2
-			;soundbeep
 	} else {
 			Gosub, reset_vars
 			continue
@@ -131,6 +130,7 @@ Loop, {
 				if (time_on != 1000){
 					button_down := 0
 					Send {%KeyToPress% up}
+					;soundbeep, 750, 10
 				}
 			}
 			
@@ -144,6 +144,7 @@ Loop, {
 				if (allowed_fire){
 					;Send down
 					Send {%KeyToPress% down}
+					;soundbeep, 500, 10
 				}
 				
 			}
