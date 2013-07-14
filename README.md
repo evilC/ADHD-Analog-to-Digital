@@ -1,4 +1,4 @@
-ADHD-Analogue-Jumpjets
+ADHD-Analog-Jumpjets
 ======================
 
-An experiment in analogue to digital - using an axis to spam space at varying rates
+An experiment in analog to digital - using an axis to spam space at varying rates
