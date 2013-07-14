@@ -15,13 +15,13 @@ SetKeyDelay, 0, 50
 
 ; Stuff for the About box
 
-ADHD.config_about({name: "Analog Jumpjets", version: 0.1, author: "evilC", link: "<a href=""http://evilc.com/proj/adhd"">Homepage</a>"})
+ADHD.config_about({name: "Analog Jumpjets", version: 1.0, author: "evilC", link: "<a href=""http://evilc.com/proj/adhd"">Homepage</a>"})
 ; The default application to limit hotkeys to.
 ; Starts disabled by default, so no danger setting to whatever you want
 ADHD.config_default_app("CryENGINE")
 
 ; GUI size
-ADHD.config_size(375,200)
+ADHD.config_size(375,225)
 
 ; We need no actions, so disable warning
 ADHD.config_ignore_noaction_warning()
@@ -54,12 +54,16 @@ Gui, Add, Text, x5 yp+25, Joystick Axis
 ADHD.gui_add("DropDownList", "JoyAxis", "xp+120 yp-2 W50", "1|2|3|4|5|6", "1")
 
 Gui, Add, Text, x5 yp+25, Use Half Axis
-ADHD.gui_add("DropDownList", "HalfAxis", "xp+120 yp-2 W50", "None|Start|End", "None")
-
-Gui, Add, Text, x5 yp+25, Current axis value
-Gui, Add, Edit, xp+120 yp-2 W50 R1 vAxisValue Disabled,
+ADHD.gui_add("DropDownList", "HalfAxis", "xp+120 yp-2 W50", "None|Low|High", "None")
 
 ADHD.gui_add("CheckBox", "InvertAxis", "x5 yp+30", "Invert Axis", 0)
+
+Gui, Add, Text, x5 yp+25, Current axis value
+Gui, Add, Edit, xp+120 yp-2 W50 R1 vAxisValueIn Disabled,
+
+Gui, Add, Text, x5 yp+25, Adjusted axis value
+Gui, Add, Edit, xp+120 yp-2 W50 R1 vAxisValueOut Disabled,
+
 
 
 ; End GUI creation section
@@ -88,47 +92,29 @@ Loop, {
 		axis := 100 - axis
 	}
 	axis := round(axis,2)
-	GuiControl,,AxisValue, % axis
+	GuiControl,,AxisValueIn, % axis
 	; trigger is half an axis, so ignore right trigger
-	if (HalfAxis == "Start"){
+	if (HalfAxis == "Low"){
 		if (axis <= 50){
-			; Convert from 0(max press)-50(no press) to 0-1000
-			time_on := round(((50 - axis)) * 20, 2)
+			; Convert from 0(max press)-50(no press) to 0-100
+			axis := (50 - axis) * 2
 		} else {
 			Gosub, reset_vars
 			continue
 		}
-	} else if (HalfAxis == "End"){
+	} else if (HalfAxis == "High"){
 		if (axis >= 50){
-			; Convert from 50-100 to 0-1000
-			time_on := round((axis - 50) * 20, 2)
+			; Convert from 50-100 to 0-100
+			axis := (axis - 50) * 2
 			;soundbeep
 	} else {
 			Gosub, reset_vars
 			continue
 		}
-	} else {
-		; Convert from 0-100 to 0-1000
-		time_on := round(axis * 10, 2)
 	}
-	/*
-	if (axis < 50){
-		; Less than 50 is considered a "release", so call reset_vars
-		Gosub, reset_vars
-		continue
-	}
-	
-	; Convert from 50-100 to 0-1000
-	time_on := round((axis - min_delay) * 20, 2)
-	*/
-
-	/*
-	;Flighstick throttle
-	GetKeyState, axis, 1JoyZ
-	; Convert from 0-100 to 0-1000
-	; 30%: 300ms
+	axis := round(axis,2)
+	GuiControl,,AxisValueOut, % axis
 	time_on := round(axis * 10, 2)
-	*/
 	
 	; Check that the amount of time we need to hold the button is more than the minimum delay
 	if (time_on >= min_delay){
