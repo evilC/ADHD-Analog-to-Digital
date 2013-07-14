@@ -21,7 +21,7 @@ ADHD.config_about({name: "Analog to Digital", version: 1.1, author: "evilC", lin
 ADHD.config_default_app("CryENGINE")
 
 ; GUI size
-ADHD.config_size(375,200)
+ADHD.config_size(375,230)
 
 ; We need no actions, so disable warning
 ADHD.config_ignore_noaction_warning()
@@ -56,6 +56,8 @@ ADHD.gui_add("DropDownList", "HalfAxis", "xp+120 yp-5 W50", "None|Low|High", "No
 Gui, Add, Text, x5 yp+30, Fire Sequence
 ADHD.gui_add("Edit", "FireSequence", "xp+120 yp-5 W50", "", "Space")
 Gui, Add, Text, xp+70 yp+5 Disabled, AHK key names. ie "Space" not " "
+
+ADHD.gui_add("CheckBox", "KeyUpOnFull", "x5 yp+25", "Send key up when at 100% rate", 0)
 
 
 Gui, Add, Text, x5 yp+25, Current axis value
@@ -126,7 +128,8 @@ Loop, {
 			; Wait for time from last press, plus min delay
 			if (A_TickCount >= basetime + min_delay){
 				; LEAVE basetime as the time when key was last pressed
-				if (time_on != 1000){
+				; Do not send key up at 100% rate
+				if (KeyUpOnFull || time_on != 1000){
 					send_key_up()
 				}
 			}
