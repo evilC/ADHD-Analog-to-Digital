@@ -15,16 +15,22 @@ SetKeyDelay, 0, 50
 
 ; Stuff for the About box
 
-ADHD.config_about({name: "Analog Jumpjets", version: 1.0, author: "evilC", link: "<a href=""http://evilc.com/proj/adhd"">Homepage</a>"})
+ADHD.config_about({name: "Analog to Digital", version: 1.0, author: "evilC", link: "<a href=""http://evilc.com/proj/adhd"">Homepage</a>"})
 ; The default application to limit hotkeys to.
 ; Starts disabled by default, so no danger setting to whatever you want
 ADHD.config_default_app("CryENGINE")
 
 ; GUI size
-ADHD.config_size(375,225)
+ADHD.config_size(375,200)
 
 ; We need no actions, so disable warning
 ADHD.config_ignore_noaction_warning()
+
+; Hook into ADHD events
+; First parameter is name of event to hook into, second parameter is a function name to launch on that event
+ADHD.config_event("app_active", "app_active_hook")
+ADHD.config_event("app_inactive", "app_inactive_hook")
+ADHD.config_event("option_changed", "option_changed_hook")
 
 ADHD.init()
 ADHD.create_gui()
@@ -36,16 +42,21 @@ Gui, Tab, 1
 
 axis_list_ahk := Array("X","Y","Z","R","U","V")
 
-Gui, Add, Text, x5 yp+25, Joystick number
-ADHD.gui_add("DropDownList", "JoyID", "xp+120 yp-2 W50", "1|2|3|4|5|6|7|8", "1")
+Gui, Add, Text, x5 yp+25, Joystick: ID
+ADHD.gui_add("DropDownList", "JoyID", "xp+60 yp-5 W50", "1|2|3|4|5|6|7|8", "1")
 
-Gui, Add, Text, x5 yp+25, Joystick Axis
-ADHD.gui_add("DropDownList", "JoyAxis", "xp+120 yp-2 W50", "1|2|3|4|5|6", "1")
+Gui, Add, Text, xp+60 yp+5, Axis
+ADHD.gui_add("DropDownList", "JoyAxis", "xp+40 yp-5 W50", "1|2|3|4|5|6", "1")
 
-Gui, Add, Text, x5 yp+25, Use Half Axis
-ADHD.gui_add("DropDownList", "HalfAxis", "xp+120 yp-2 W50", "None|Low|High", "None")
+ADHD.gui_add("CheckBox", "InvertAxis", "xp+60  yp+5", "Invert Axis", 0)
 
-ADHD.gui_add("CheckBox", "InvertAxis", "x5 yp+30", "Invert Axis", 0)
+Gui, Add, Text, x5 yp+30, Use Half Axis
+ADHD.gui_add("DropDownList", "HalfAxis", "xp+120 yp-5 W50", "None|Low|High", "None")
+
+Gui, Add, Text, x5 yp+30, Key to press
+ADHD.gui_add("Edit", "KeyToPress", "xp+120 yp-5 W50", "", "Space")
+Gui, Add, Text, xp+70 yp+5 Disabled, AHK key name. ie "Space" not " "
+
 
 Gui, Add, Text, x5 yp+25, Current axis value
 Gui, Add, Edit, xp+120 yp-2 W50 R1 vAxisValueIn Disabled,
@@ -63,6 +74,8 @@ ADHD.finish_startup()
 
 ; The time a game needs to recognise a key down
 min_delay := 50	
+
+allowed_fire := 1
 
 ; The fraction of the delay time to run as a "clock"
 ; Should probably be at least 2
@@ -117,10 +130,7 @@ Loop, {
 				; LEAVE basetime as the time when key was last pressed
 				if (time_on != 1000){
 					button_down := 0
-					If Winactive("ahk_class CryENGINE"){
-						;Send up
-						Send {space up}
-					}
+					Send {%KeyToPress% up}
 				}
 			}
 			
@@ -131,13 +141,12 @@ Loop, {
 				button_down := 1
 				; Set basetime to time when we last pressed
 				basetime := A_TickCount
-				If Winactive("ahk_class CryENGINE"){
+				if (allowed_fire){
 					;Send down
-					Send {space down}
+					Send {%KeyToPress% down}
 				}
 				
 			}
-			
 		}
 	} else {
 		Gosub, reset_vars
@@ -149,7 +158,7 @@ return
 reset_vars:
 	time_on := 0
 	if (button_down){
-		Send {space up}
+		Send {%KeyToPress% up}
 		button_down := 0
 	}
 	
@@ -158,6 +167,29 @@ reset_vars:
 	tooltip,
 	return
 
+app_active_hook(){
+	global allowed_fire
+	allowed_fire := 1
+	
+}
+
+app_inactive_hook(){
+	global allowed_fire
+	allowed_fire := 0
+
+}
+
+option_changed_hook(){
+	global ADHD
+	global allowed_fire
+	
+	; Reset allowed_fire if we enabled/disabled limit app
+	allowed_fire := .config_get_default_app_on()
+	
+	Gosub, reset_vars
+	
+	
+}
 ; KEEP THIS AT THE END!!
 ;#Include ADHDLib.ahk		; If you have the library in the same folder as your macro, use this
 #Include <ADHDLib>			; If you have the library in the Lib folder (C:\Program Files\Autohotkey\Lib), use this

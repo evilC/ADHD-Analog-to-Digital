@@ -1,7 +1,9 @@
 ADHD-Analog-Jumpjets
 ======================
 
-An experiment in analog to digital - using an axis to spam space at varying rates
+An experiment in analog to digital - using an axis to spam a key at varying rates
+It is an attempt to solve the problem of how you "strobe" a key at a dynamically altering rate when the game only recognises presses of a certain duration.
+
 
 Installation:
 Either
@@ -10,7 +12,7 @@ Or
 Run the EXE file
 
 Usage:
-Joystick Number sets the ID of your physical stick
+Joystick ID sets the ID of your physical stick
 Joystick Axis sets the axis number of the axis you wish to use
 Use Half Axis allows you to use only half the axis (ie from the mid-point to either end)
 Invert Axis allows you to invert the input (Probably useless in combination with Use Half Axis)
