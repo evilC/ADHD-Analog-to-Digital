@@ -57,7 +57,7 @@ Gui, Add, Text, x5 yp+25, Use Half Axis
 ADHD.gui_add("DropDownList", "HalfAxis", "xp+120 yp-2 W50", "None|Start|End", "None")
 
 Gui, Add, Text, x5 yp+25, Current axis value
-Gui, Add, Edit, xp+120 yp-2 W50 R1 vAxisValue Disabled, Use Half Axis
+Gui, Add, Edit, xp+120 yp-2 W50 R1 vAxisValue Disabled,
 
 ADHD.gui_add("CheckBox", "InvertAxis", "x5 yp+30", "Invert Axis", 0)
 
@@ -67,7 +67,6 @@ ADHD.gui_add("CheckBox", "InvertAxis", "x5 yp+30", "Invert Axis", 0)
 
 
 ADHD.finish_startup()
-;return
 
 ; The time a game needs to recognise a key down
 min_delay := 50	
@@ -79,25 +78,10 @@ time_on := 0
 button_down := 0
 basetime := 0
 
-/*
-10% thrust
-= 100ms in 1s
-= 2x 50ms blocks on a 500ms tick?
-= pressed for 50ms on a 500ms tick
-
-1000 * 30%
-30% thrust
-= 300ms in 1s
-300/50 = 6
-1000/6 = 166.666
-= pressed for 50ms on a 166.66ms tick
-*/
 
 Loop, {
 	; How many ms in a second do we need to be holding the button?
 	
-	; XBOX controller left trigger
-	;GetKeyState, axis, 3JoyZ
 	tmp := JoyID "Joy" axis_list_ahk[JoyAxis]
 	GetKeyState, axis, % tmp
 	if (InvertAxis){
