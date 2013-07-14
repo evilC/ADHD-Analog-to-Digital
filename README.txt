@@ -1,4 +1,4 @@
-ADHD-Analog-Jumpjets
+ADHD-Analog-to-Digital
 ======================
 
 An experiment in analog to digital - using an axis to spam a key at varying rates
