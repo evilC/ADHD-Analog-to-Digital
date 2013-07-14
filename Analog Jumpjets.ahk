@@ -26,17 +26,6 @@ ADHD.config_size(375,225)
 ; We need no actions, so disable warning
 ADHD.config_ignore_noaction_warning()
 
-; Hook into ADHD events
-; First parameter is name of event to hook into, second parameter is a function name to launch on that event
-/*
-ADHD.config_event("option_changed", "option_changed_hook")
-ADHD.config_event("program_mode_on", "program_mode_on_hook")
-ADHD.config_event("program_mode_off", "program_mode_off_hook")
-ADHD.config_event("app_active", "app_active_hook")
-ADHD.config_event("app_inactive", "app_inactive_hook")
-ADHD.config_event("disable_timers", "disable_timers_hook")
-ADHD.config_event("resolution_changed", "resolution_changed_hook")
-*/
 ADHD.init()
 ADHD.create_gui()
 
