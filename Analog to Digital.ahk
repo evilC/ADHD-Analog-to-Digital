@@ -21,7 +21,7 @@ ADHD.config_about({name: "Analog to Digital", version: 1.1, author: "evilC", lin
 ADHD.config_default_app("CryENGINE")
 
 ; GUI size
-ADHD.config_size(375,230)
+ADHD.config_size(375,270)
 
 ; We need no actions, so disable warning
 ADHD.config_ignore_noaction_warning()
@@ -59,6 +59,8 @@ Gui, Add, Text, xp+70 yp+5 Disabled, AHK key names. ie "Space" not " "
 
 ADHD.gui_add("CheckBox", "KeyUpOnFull", "x5 yp+25", "Send key up when at 100% rate", 0)
 
+Gui, Add, Text, x5 yp+25, Current fire rate (ms)
+Gui, Add, Edit, xp+120 yp-2 W50 R1 vCurrFireRate Disabled,
 
 Gui, Add, Text, x5 yp+25, Current axis value
 Gui, Add, Edit, xp+120 yp-2 W50 R1 vAxisValueIn Disabled,
@@ -117,6 +119,7 @@ Loop, {
 	axis := round(axis,2)
 	GuiControl,,AxisValueOut, % axis
 	time_on := round(axis * 10, 2)
+	GuiControl,,CurrFireRate, % round(time_on)
 	
 	; Check that the amount of time we need to hold the button is more than the minimum delay
 	if (time_on >= min_delay){
