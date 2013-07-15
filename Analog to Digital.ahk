@@ -55,7 +55,7 @@ ADHD.gui_add("DropDownList", "HalfAxis", "xp+120 yp-5 W50", "None|Low|High", "No
 
 Gui, Add, Text, x5 yp+30, Fire Sequence
 ADHD.gui_add("Edit", "FireSequence", "xp+120 yp-5 W50", "", "Space")
-Gui, Add, Text, xp+70 yp+5, AHK key names. ie "Space" not " "
+Gui, Add, Text, xp+70 yp+2, AHK key names. ie "Space" not " "
 
 Gui, Add, Text, x5 yp+30, Fire Rate Divider
 ADHD.gui_add("Edit", "FireDivider", "xp+120 yp-5 W50", "", "1")
@@ -70,6 +70,8 @@ Gui, Add, Edit, xp+120 yp-2 W50 R1 vAxisValueOut Disabled,
 Gui, Add, Text, x5 yp+25, Current fire rate (ms)
 Gui, Add, Edit, xp+120 yp-2 W50 R1 vCurrFireRate Disabled,
 
+Gui, Add, Text, xp+70 yp+2, Fire State: 
+Gui, Add, Text, xp+50 yp cgreen vFireState, Down
 
 
 
@@ -111,9 +113,8 @@ Loop, {
 	if (axis > 0){
 		tick_rate := (100 - axis) * 10
 		GuiControl,,CurrFireRate, % round(tick_rate)
-
 	} else {
-		; set tick rate to 0
+		; set tick rate off
 		tick_rate := -1
 		GuiControl,,CurrFireRate, % "Off"
 		tooltip,
@@ -124,7 +125,8 @@ Loop, {
 	if (button_down && (last_tick + min_delay <= loop_time)){
 		if (axis != 100 || fire_sequence.MaxIndex() > 1){
 			button_down := 0
-			tooltip, up
+			GuiControl, +cgreen, FireState
+			GuiControl,,FireState, Up
 		}
 	}
 	
@@ -137,7 +139,8 @@ Loop, {
 	if (!button_down && tick_rate != -1 && (last_tick + tick_rate <= loop_time)){
 		last_tick := loop_time
 		button_down := 1
-		tooltip, down
+		GuiControl, +cred, FireState
+		GuiControl,,FireState, Down
 	}
 	
 	
