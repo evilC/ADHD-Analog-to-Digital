@@ -137,7 +137,7 @@ Loop, {
 	; Conform the axis to 1 to 100
 	axis := conform_axis()
 	
-	if (axis > 0){
+	if (axis){
 		tick_rate := (100 - axis) * 10
 	} else {
 		; set tick rate off
@@ -154,6 +154,8 @@ Loop, {
 		}
 		GuiControl,,CurrFireRate, % tick_rate
 	}
+
+	GuiControl,,AxisValueOut, % axis
 	
 	; Process any waiting key up events
 	; We should probably do this before processing key downs, so we maintain order, even at high rates
@@ -183,6 +185,7 @@ Loop, {
 	}
 	
 	set_fire_state(button_down)
+
 	
 	Sleep, 10
 	
@@ -270,6 +273,7 @@ conform_axis(){
 	global JoyAxis
 	global InvertAxis
 	global HalfAxis
+	global DeadZone
 	
 	tmp := JoyID "Joy" axis_list_ahk[JoyAxis]
 	GetKeyState, axis, % tmp
@@ -293,8 +297,15 @@ conform_axis(){
 			axis := 0
 		}
 	}
+	; axis is now conformed to 0-100
+	
+	if (DeadZone != 0 && DeadZone != ""){
+		axis := (100 / (100 - DeadZone)) * (axis - DeadZone)
+		if (axis < 0){
+			axis := 0
+		}
+	}
 	;axis := round(axis,1)
-	GuiControl,,AxisValueOut, % axis
 	return axis
 }
 
