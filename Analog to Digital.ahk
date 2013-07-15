@@ -138,15 +138,8 @@ Loop, {
 	axis := conform_axis()
 	
 	if (axis){
-		tick_rate := (100 - axis) * 10
-		; Convert axis such that 0 (no move) is highest tickrate
-		;tick_rate := 100 - axis
-		
-		/*
-		tmp := 100 / (FireRateMax - FireRateMin)
-		tooltip, % tmp
-		tick_rate := tick_rate / tmp
-		*/
+		; Adjust tick rate to fall between specified maximums and minimums
+		tick_rate := round(FireRateMax - ((FireRateMax - FireRateMin) * (axis / 100)))
 	} else {
 		; set tick rate off
 		tick_rate := -1
@@ -163,12 +156,11 @@ Loop, {
 		if (FireRateBands != 0 && FireRateBands != ""){
 			
 		}
-
 		GuiControl,,CurrFireRate, % tick_rate
 	}
 
 
-	GuiControl,,AxisValueOut, % axis
+	GuiControl,,AxisValueOut, % round(axis,1)
 	
 	; Process any waiting key up events
 	; We should probably do this before processing key downs, so we maintain order, even at high rates
@@ -324,8 +316,10 @@ conform_axis(){
 }
 
 set_fire_state(state){
-	global axis
-	if (axis == 100){
+	global tick_rate
+	global min_delay
+	
+	if ((tick_rate != -1) && tick_rate <= min_delay){
 		GuiControl, +cred, FireState
 		GuiControl,,FireState, Max Rate
 		return
