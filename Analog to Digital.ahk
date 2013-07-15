@@ -160,12 +160,13 @@ Loop, {
 	if (button_down && (last_tick + min_delay <= loop_time)){
 		if (tick_rate > min_delay || fire_seq_count > 1){
 			button_down := 0
-			set_fire_state(button_down)
 			if (PlayDebugBeeps){
 				soundbeep, 750, 20
 			}
 		}
 	}
+	
+	set_fire_state(button_down)
 	
 	; Process any waiting key down events
 	;tooltip, % "tick_rate: " tick_rate " last_tick: " last_tick " loop_time: " loop_time
@@ -176,12 +177,12 @@ Loop, {
 	if (!button_down && tick_rate != -1 && (last_tick + tick_rate <= loop_time)){
 		last_tick := loop_time
 		button_down := 1
-		set_fire_state(button_down)
 		if (PlayDebugBeeps){
 			soundbeep, 500, 20
 		}
 	}
 	
+	set_fire_state(button_down)
 	
 	Sleep, 10
 	
