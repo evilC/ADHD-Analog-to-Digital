@@ -44,11 +44,11 @@ axis_list_ahk := Array("X","Y","Z","R","U","V")
 
 Gui, Add, GroupBox, x5 yp+25 R1 W365 R3 section, Input Configuration
 Gui, Add, Text, x15 ys+20, Joystick ID
-ADHD.gui_add("DropDownList", "JoyID", "xp+60 yp-5 W50", "1|2|3|4|5|6|7|8", "1")
+ADHD.gui_add("DropDownList", "JoyID", "xp+80 yp-5 W50", "1|2|3|4|5|6|7|8", "1")
 JoyID_TT := "The ID (Order in Windows Game Controllers?) of your Joystick"
 
 Gui, Add, Text, xp+60 ys+20, Axis
-ADHD.gui_add("DropDownList", "JoyAxis", "xp+30 yp-5 W50", "1|2|3|4|5|6", "1")
+ADHD.gui_add("DropDownList", "JoyAxis", "xp+80 yp-5 W50", "1|2|3|4|5|6", "1")
 JoyAxis_TT := "The Axis on that stick that you wish to use"
 
 ADHD.gui_add("CheckBox", "InvertAxis", "xp+60  yp+5", "Invert Axis", 0)
@@ -57,6 +57,10 @@ InvertAxis_TT := "Inverts the input axis.`nNot intended to be used with ""Use Ha
 Gui, Add, Text, x15 ys+50, Use Half Axis
 ADHD.gui_add("DropDownList", "HalfAxis", "xp80 yp-5 W50", "None|Low|High", "None")
 HalfAxis_TT := "Use only half the axis - eg for XBOX left trigger, use ""High"""
+
+Gui, Add, Text, xp+60 ys+50, % "Deadzone (%)"
+ADHD.gui_add("Edit", "DeadZone", "xp+80 yp-5 W50", "", 0)
+DeadZone_TT := "Ignore axis values below this amount"
 
 Gui, Add, GroupBox, x5 yp+35 R1 W365 R1.2 section, Output Configuration
 Gui, Add, Text, x15 ys+20, Fire Sequence
@@ -74,7 +78,7 @@ FireRateMax_TT := "Maximum Fire Rate (in ms) Default is 1000"
 
 Gui, Add, Text, xp+70 ys+15, Bands
 ADHD.gui_add("Edit", "FireRateBands", "xp+40 yp-5 W50", "", "0")
-FireRateBands_TT := ""
+FireRateBands_TT := "Split the axis up into a number of sections.`neg setting 10 would split the output into 10 blocks - 10,20,30% etc.`nUse 0 to turn off."
 
 Gui, Add, GroupBox, x5 yp+30 R3.5 W365 section, Debugging
 Gui, Add, Text, x15 ys+15, Current axis value
