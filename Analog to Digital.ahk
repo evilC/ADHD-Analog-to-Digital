@@ -76,10 +76,10 @@ Gui, Add, Edit, xp+120 yp-2 W50 R1 vCurrFireRate Disabled,
 ; End GUI creation section
 ; ============================================================================================
 
+/*
 ; The time a game needs to recognise a key down
 min_delay := 50	
 
-/*
 ; The fraction of the delay time to run as a "clock"
 ; Should probably be at least 2
 loop_time := min_delay / 2
@@ -90,7 +90,12 @@ basetime := 0
 allowed_fire := 1
 
 ; New
+; The time a game needs to recognise a key down
+min_delay := 50	
+
 last_tick := 0
+button_down := 0
+;max_ticks := round(1000 / min_delay)
 
 
 
@@ -98,8 +103,38 @@ ADHD.finish_startup()
 
 
 Loop, {
+	; Store time at start of tick to try and keep calculations and timings constant
+	loop_time := A_TickCount
 	axis := conform_axis()
-	Sleep, 100
+	
+	if (axis > 0){
+		tick_rate := (100 - axis) * 10
+	} else {
+		; set tick rate to 0
+		tick_rate := 0
+	}
+	
+	; Process any waiting key down events
+	if (tick_rate > 0 && (last_tick + tick_rate <= loop_time)){
+		if (button_down){
+			;soundbeep, 500, 10
+		} else {
+			last_tick := loop_time
+			button_down := 1
+			tooltip, down
+			soundbeep, 500, 20
+		}
+	}
+	
+	; Process any waiting key up events
+	if (button_down && (last_tick + min_delay <= loop_time)){
+		if (axis != 100 || fire_sequence.MaxIndex() > 1){
+			button_down := 0
+			tooltip, up
+		}
+	}
+	
+	Sleep, 10
 	
 	/*
 	; How many ms in a second do we need to be holding the button?
@@ -173,6 +208,8 @@ Loop, {
 }
 return
 
+; Conform the input value from an axis to a range between 0 and 100
+; Handles invert, half axis usage (eg xbox left trigger) etc
 conform_axis(){
 	global axis_list_ahk
 	global JoyID
