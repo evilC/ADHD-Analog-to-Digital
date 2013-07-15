@@ -4,6 +4,9 @@ Key:
 = : Change / Fix
 + : Added feature
 
+1.2 15th Jul 2013
++ Added homepage link
+
 1.1 14th Jul 2013
 = Initial public release
 

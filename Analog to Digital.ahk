@@ -15,7 +15,7 @@ SetKeyDelay, 0, 50
 
 ; Stuff for the About box
 
-ADHD.config_about({name: "Analog to Digital", version: 1.1, author: "evilC", link: "<a href=""http://mwomercs.com/forums/topic/127120-analog-to-digital-analog-jump-jets-variable-fire-rate-gatling-gun-ac2"">Homepage</a>"})
+ADHD.config_about({name: "Analog to Digital", version: 1.2, author: "evilC", link: "<a href=""http://mwomercs.com/forums/topic/127120-analog-to-digital-analog-jump-jets-variable-fire-rate-gatling-gun-ac2"">Homepage</a>"})
 ; The default application to limit hotkeys to.
 ; Starts disabled by default, so no danger setting to whatever you want
 ADHD.config_default_app("CryENGINE")
