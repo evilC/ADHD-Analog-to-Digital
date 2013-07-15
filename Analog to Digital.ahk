@@ -97,7 +97,8 @@ min_delay := 50
 
 last_tick := 0
 button_down := 0
-;max_ticks := round(1000 / min_delay)
+fire_sequence := []
+fire_max := 0	; cached count of fire_sequence
 
 
 
@@ -112,18 +113,26 @@ Loop, {
 	
 	if (axis > 0){
 		tick_rate := (100 - axis) * 10
-		GuiControl,,CurrFireRate, % round(tick_rate)
 	} else {
 		; set tick rate off
 		tick_rate := -1
-		GuiControl,,CurrFireRate, % "Off"
 		tooltip,
+	}
+	
+	if (tick_rate != -1 && tick_rate < min_delay && fire_max == 1){
+		tick_rate := min_delay
+	}
+	
+	if (tick_rate == -1){
+		GuiControl,,CurrFireRate, % "Off"	
+	} else {
+		GuiControl,,CurrFireRate, % tick_rate
 	}
 	
 	; Process any waiting key up events
 	; We should probably do this before processing key downs, so we maintain order, even at high rates
 	if (button_down && (last_tick + min_delay <= loop_time)){
-		if (axis != 100 || fire_sequence.MaxIndex() > 1){
+		if (axis != 100 || fire_max > 1){
 			button_down := 0
 			set_fire_state(button_down)
 		}
@@ -139,6 +148,7 @@ Loop, {
 		last_tick := loop_time
 		button_down := 1
 		set_fire_state(button_down)
+		soundbeep, 500, 20
 	}
 	
 	
@@ -247,7 +257,7 @@ conform_axis(){
 			axis := 0
 		}
 	}
-	axis := round(axis,1)
+	;axis := round(axis,1)
 	GuiControl,,AxisValueOut, % axis
 	return axis
 }
