@@ -15,13 +15,13 @@ SetKeyDelay, 0, 50
 
 ; Stuff for the About box
 
-ADHD.config_about({name: "Analog to Digital", version: 1.2, author: "evilC", link: "<a href=""http://mwomercs.com/forums/topic/127120-analog-to-digital-analog-jump-jets-variable-fire-rate-gatling-gun-ac2"">Homepage</a>"})
+ADHD.config_about({name: "Analog to Digital", version: 1.3, author: "evilC", link: "<a href=""http://mwomercs.com/forums/topic/127120-analog-to-digital-analog-jump-jets-variable-fire-rate-gatling-gun-ac2"">Homepage</a>"})
 ; The default application to limit hotkeys to.
 ; Starts disabled by default, so no danger setting to whatever you want
 ADHD.config_default_app("CryENGINE")
 
 ; GUI size
-ADHD.config_size(375,280)
+ADHD.config_size(375,260)
 
 ; We need no actions, so disable warning
 ADHD.config_ignore_noaction_warning()
@@ -61,8 +61,6 @@ Gui, Add, Text, x5 yp+30, Fire Rate Divider
 ADHD.gui_add("Edit", "FireDivider", "xp+120 yp-5 W50", "", "1")
 Gui, Add, Text, xp+70 yp+5, Set to 1 to disable, not 0
 
-ADHD.gui_add("CheckBox", "KeyUpOnFull", "x5 yp+25", "Send key up when at 100% rate", 1)
-
 Gui, Add, Text, x5 yp+25, Current axis value
 Gui, Add, Edit, xp+120 yp-2 W50 R1 vAxisValueIn Disabled,
 
@@ -81,19 +79,29 @@ Gui, Add, Edit, xp+120 yp-2 W50 R1 vCurrFireRate Disabled,
 ; The time a game needs to recognise a key down
 min_delay := 50	
 
+/*
 ; The fraction of the delay time to run as a "clock"
 ; Should probably be at least 2
 loop_time := min_delay / 2
 time_on := 0
 button_down := 0
 basetime := 0
-
+*/
 allowed_fire := 1
+
+; New
+last_tick := 0
+
+
 
 ADHD.finish_startup()
 
 
 Loop, {
+	axis := conform_axis()
+	Sleep, 100
+	
+	/*
 	; How many ms in a second do we need to be holding the button?
 	
 	tmp := JoyID "Joy" axis_list_ahk[JoyAxis]
@@ -125,12 +133,13 @@ Loop, {
 	GuiControl,,AxisValueOut, % axis
 	time_on := round(axis * 10, 2)
 	time_on := time_on / FireDivider
-	GuiControl,,CurrFireRate, % round(time_on)
+	;GuiControl,,CurrFireRate, % round(time_on)
 	
 	; Check that the amount of time we need to hold the button is more than the minimum delay
 	if (time_on >= min_delay){
 		num_presses := time_on / min_delay
 		tick_rate := 1000 / num_presses
+		GuiControl,,CurrFireRate, % round(tick_rate)
 		
 		if (button_down){
 			; Process UP
@@ -138,7 +147,8 @@ Loop, {
 			if (A_TickCount >= basetime + min_delay){
 				; LEAVE basetime as the time when key was last pressed
 				; Do not send key up at 100% rate
-				if (KeyUpOnFull || time_on != 1000){
+				; If time_on is 1000 (ie no time left to send a key up), only send key up if more than one key used
+				if (time_on != 1000 || fire_sequence.MaxIndex() > 1){
 					send_key_up()
 				}
 			}
@@ -159,8 +169,43 @@ Loop, {
 		Gosub, reset_vars
 	}
 	Sleep, % loop_time
+	*/
 }
 return
+
+conform_axis(){
+	global axis_list_ahk
+	global JoyID
+	global JoyAxis
+	global InvertAxis
+	global HalfAxis
+	
+	tmp := JoyID "Joy" axis_list_ahk[JoyAxis]
+	GetKeyState, axis, % tmp
+	if (InvertAxis){
+		axis := 100 - axis
+	}
+	GuiControl,,AxisValueIn, % round(axis,1)
+	; trigger is half an axis, so ignore right trigger
+	if (HalfAxis == "Low"){
+		if (axis <= 50){
+			; Convert from 0(max press)-50(no press) to 0-100
+			axis := (50 - axis) * 2
+		} else {
+			axis := 0
+		}
+	} else if (HalfAxis == "High"){
+		if (axis >= 50){
+			; Convert from 50-100 to 0-100
+			axis := (axis - 50) * 2
+	} else {
+			axis := 0
+		}
+	}
+	axis := round(axis,1)
+	GuiControl,,AxisValueOut, % axis
+	return axis
+}
 
 reset_vars:
 	time_on := 0
