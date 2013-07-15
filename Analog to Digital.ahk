@@ -153,14 +153,10 @@ Loop, {
 		if (tick_rate < min_delay && fire_seq_count == 1){
 			tick_rate := min_delay
 		}
-		if (FireRateBands != 0 && FireRateBands != ""){
-			
-		}
 		GuiControl,,CurrFireRate, % tick_rate
 	}
 
 
-	GuiControl,,AxisValueOut, % round(axis,1)
 	
 	; Process any waiting key up events
 	; We should probably do this before processing key downs, so we maintain order, even at high rates
@@ -279,12 +275,14 @@ conform_axis(){
 	global InvertAxis
 	global HalfAxis
 	global DeadZone
+	global FireRateBands
 	
 	tmp := JoyID "Joy" axis_list_ahk[JoyAxis]
 	GetKeyState, axis, % tmp
 	if (InvertAxis){
 		axis := 100 - axis
 	}
+
 	GuiControl,,AxisValueIn, % round(axis,1)
 	; trigger is half an axis, so ignore right trigger
 	if (HalfAxis == "Low"){
@@ -304,12 +302,19 @@ conform_axis(){
 	}
 	; axis is now conformed to 0-100
 	
+	if (FireRateBands != 0 && FireRateBands != ""){
+		bandsize := 100 / FireRateBands
+		axis := ceil(axis / bandsize) * bandsize
+		
+	}
+	
 	if (DeadZone != 0 && DeadZone != ""){
 		axis := (100 / (100 - DeadZone)) * (axis - DeadZone)
 		if (axis < 0){
 			axis := 0
 		}
 	}
+	GuiControl,,AxisValueOut, % round(axis,1)
 	
 	;axis := round(axis,1)
 	return axis
