@@ -71,7 +71,7 @@ Gui, Add, Text, x5 yp+25, Current fire rate (ms)
 Gui, Add, Edit, xp+120 yp-2 W50 R1 vCurrFireRate Disabled,
 
 Gui, Add, Text, xp+70 yp+2, Fire State: 
-Gui, Add, Text, xp+50 yp cgreen vFireState, Down
+Gui, Add, Text, xp+50 yp W80 vFireState,
 
 
 
@@ -125,8 +125,7 @@ Loop, {
 	if (button_down && (last_tick + min_delay <= loop_time)){
 		if (axis != 100 || fire_sequence.MaxIndex() > 1){
 			button_down := 0
-			GuiControl, +cgreen, FireState
-			GuiControl,,FireState, Up
+			set_fire_state(button_down)
 		}
 	}
 	
@@ -139,12 +138,11 @@ Loop, {
 	if (!button_down && tick_rate != -1 && (last_tick + tick_rate <= loop_time)){
 		last_tick := loop_time
 		button_down := 1
-		GuiControl, +cred, FireState
-		GuiControl,,FireState, Down
+		set_fire_state(button_down)
 	}
 	
 	
-	Sleep, 1
+	Sleep, 10
 	
 	/*
 	; How many ms in a second do we need to be holding the button?
@@ -254,6 +252,27 @@ conform_axis(){
 	return axis
 }
 
+set_fire_state(state){
+	global axis
+	if (axis == 100){
+		GuiControl, +cred, FireState
+		GuiControl,,FireState, Max Rate
+		return
+	}
+	if (state){
+		; Fire is on
+		
+		GuiControl, +cred, FireState
+		GuiControl,,FireState, Down
+	} else {
+		; Fire is off
+		
+		GuiControl, +cgreen, FireState
+		GuiControl,,FireState, Up
+	}
+}
+
+/*
 reset_vars:
 	time_on := 0
 	if (button_down){
@@ -263,6 +282,7 @@ reset_vars:
 	basetime := 0
 	tick_rate := 0
 	return
+*/
 
 send_key_down(){
 	global fire_cur
@@ -311,6 +331,11 @@ option_changed_hook(){
 	global fire_cur
 	global fire_max
 	
+	; New
+	set_fire_state(0)	; init the output display
+	
+	; Old
+	
 	fire_max := 0
 	StringSplit, tmp, FireSequence, `,
 	fire_sequence := []
@@ -323,7 +348,7 @@ option_changed_hook(){
 	; Reset allowed_fire if we enabled/disabled limit app
 	allowed_fire := !ADHD.config_get_default_app_on()
 	fire_cur := 1
-	Gosub, reset_vars
+	;Gosub, reset_vars
 	
 	
 }
