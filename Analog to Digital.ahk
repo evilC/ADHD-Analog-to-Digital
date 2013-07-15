@@ -90,7 +90,7 @@ Gui, Add, Edit, xp+120 yp-2 W50 R1 vCurrFireRate ReadOnly,
 CurrFireRate_TT := "The fire rate the macro currently wants to fire at"
 
 Gui, Add, Text, xp+60 yp+2, Fire State: 
-Gui, Add, Text, xp+50 yp W80 vFireState,
+Gui, Add, Edit, xp+50 yp-3 W80 Readonly vFireState,
 FireState_TT := "Whether button state is down or up"
 
 Gui, Add, CheckBox, x15 yp+25 vPlayDebugBeeps gdebug_beep_changed, Play debug beeps
