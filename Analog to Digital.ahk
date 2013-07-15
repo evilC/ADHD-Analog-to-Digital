@@ -67,20 +67,20 @@ Gui, Add, Text, x15 ys+20, Fire Sequence
 ADHD.gui_add("Edit", "FireSequence", "xp+120 yp-5 W80", "", "Space")
 FireSequence_TT := "One key or a sequence of keys separated by commas, eg 1,2,3,4`nAHK key names. ie ""Space"" not "" """
 
-Gui, Add, GroupBox, x5 yp+30 R1 W365 section, Fire Rate
-Gui, Add, Text, x15 ys+15, Min
-ADHD.gui_add("Edit", "FireRateMin", "xp+50 yp-5 W50", "", "0")
-FireRateMin_TT := "Minimum Fire Rate (in ms) Default is 0"
-
-Gui, Add, Text, xp+70 ys+15, Max
-ADHD.gui_add("Edit", "FireRateMax", "xp+40 yp-5 W50", "", "1000")
+Gui, Add, GroupBox, x5 yp+30 R1.4 W365 section, Fire Rate (in ms, lower number is faster fire!)
+Gui, Add, Text, x15 ys+20, Max (Slow)
+ADHD.gui_add("Edit", "FireRateMax", "xp+60 yp-2 W50", "", "1000")
 FireRateMax_TT := "Maximum Fire Rate (in ms) Default is 1000"
 
-Gui, Add, Text, xp+70 ys+15, Bands
-ADHD.gui_add("Edit", "FireRateBands", "xp+40 yp-5 W50", "", "0")
+Gui, Add, Text, xp+70 ys+20, Min (Fast)
+ADHD.gui_add("Edit", "FireRateMin", "xp+50 yp-2 W50", "", "0")
+FireRateMin_TT := "Minimum Fire Rate (in ms) Default is 0"
+
+Gui, Add, Text, xp+70 ys+20, Bands
+ADHD.gui_add("Edit", "FireRateBands", "xp+40 yp-2 W50", "", "0")
 FireRateBands_TT := "Split the axis up into a number of sections.`neg setting 10 would split the output into 10 blocks - 10,20,30% etc.`nUse 0 to turn off."
 
-Gui, Add, GroupBox, x5 yp+30 R3.5 W365 section, Debugging
+Gui, Add, GroupBox, x5 yp+35 R3.5 W365 section, Debugging
 Gui, Add, Text, x15 ys+15, Current axis value
 Gui, Add, Edit, xp+120 yp-2 W50 R1 vAxisValueIn ReadOnly,
 AxisValueIn_TT := "Raw input value of the axis.`nIf you have Joystick ID and axis set correctly,`nmoving the axis should change the numbers here"
@@ -139,6 +139,14 @@ Loop, {
 	
 	if (axis){
 		tick_rate := (100 - axis) * 10
+		; Convert axis such that 0 (no move) is highest tickrate
+		;tick_rate := 100 - axis
+		
+		/*
+		tmp := 100 / (FireRateMax - FireRateMin)
+		tooltip, % tmp
+		tick_rate := tick_rate / tmp
+		*/
 	} else {
 		; set tick rate off
 		tick_rate := -1
@@ -152,8 +160,13 @@ Loop, {
 		if (tick_rate < min_delay && fire_seq_count == 1){
 			tick_rate := min_delay
 		}
+		if (FireRateBands != 0 && FireRateBands != ""){
+			
+		}
+
 		GuiControl,,CurrFireRate, % tick_rate
 	}
+
 
 	GuiControl,,AxisValueOut, % axis
 	
@@ -305,6 +318,7 @@ conform_axis(){
 			axis := 0
 		}
 	}
+	
 	;axis := round(axis,1)
 	return axis
 }
