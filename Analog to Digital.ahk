@@ -45,11 +45,14 @@ axis_list_ahk := Array("X","Y","Z","R","U","V")
 Gui, Add, GroupBox, x5 yp+25 R1 W365 R3 section, Input Configuration
 Gui, Add, Text, x15 ys+20, Joystick ID
 ADHD.gui_add("DropDownList", "JoyID", "xp+60 yp-5 W50", "1|2|3|4|5|6|7|8", "1")
+JoyID_TT := "The ID (Order in Windows Game Controllers?) of your Joystick"
 
 Gui, Add, Text, xp+60 ys+20, Axis
 ADHD.gui_add("DropDownList", "JoyAxis", "xp+30 yp-5 W50", "1|2|3|4|5|6", "1")
+JoyAxis_TT := "The Axis on that stick that you wish to use"
 
 ADHD.gui_add("CheckBox", "InvertAxis", "xp+60  yp+5", "Invert Axis", 0)
+InvertAxis_TT := "Inverts the input axis.`nNot intended to be used with ""Use Half Axis"""
 
 Gui, Add, Text, x15 ys+50, Use Half Axis
 ADHD.gui_add("DropDownList", "HalfAxis", "xp80 yp-5 W50", "None|Low|High", "None")
@@ -75,18 +78,23 @@ FireRateBands_TT := ""
 
 Gui, Add, GroupBox, x5 yp+30 R3.5 W365 section, Debugging
 Gui, Add, Text, x15 ys+15, Current axis value
-Gui, Add, Edit, xp+120 yp-2 W50 R1 vAxisValueIn Disabled,
+Gui, Add, Edit, xp+120 yp-2 W50 R1 vAxisValueIn ReadOnly,
+AxisValueIn_TT := "Raw input value of the axis.`nIf you have Joystick ID and axis set correctly,`nmoving the axis should change the numbers here"
 
 Gui, Add, Text, xp+60 ys+15, Adjusted axis value
-Gui, Add, Edit, xp+100 yp-2 W50 R1 vAxisValueOut Disabled,
+Gui, Add, Edit, xp+100 yp-2 W50 R1 vAxisValueOut ReadOnly,
+AxisValueOut_TT := "Input value adjusted according to options`nShould be 0 at center, 100 at full deflection"
 
 Gui, Add, Text, x15 yp+25, Current fire rate (ms)
-Gui, Add, Edit, xp+120 yp-2 W50 R1 vCurrFireRate Disabled,
+Gui, Add, Edit, xp+120 yp-2 W50 R1 vCurrFireRate ReadOnly,
+CurrFireRate_TT := "The fire rate the macro currently wants to fire at"
 
 Gui, Add, Text, xp+60 yp+2, Fire State: 
 Gui, Add, Text, xp+50 yp W80 vFireState,
+FireState_TT := "Whether button state is down or up"
 
 Gui, Add, CheckBox, x15 yp+25 vPlayDebugBeeps gdebug_beep_changed, Play debug beeps
+PlayDebugBeeps_TT := "Warning! beeps take 10ms! Script stops running while beeps play..."
 
 
 ; End GUI creation section
