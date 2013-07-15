@@ -99,7 +99,7 @@ min_delay := 50
 last_tick := 0
 button_down := 0
 fire_sequence := []
-fire_max := 0	; cached count of fire_sequence
+fire_seq_count := 0	; cached count of fire_sequence
 
 
 
@@ -120,23 +120,21 @@ Loop, {
 		tooltip,
 	}
 	
-	if (tick_rate != -1){
-		tick_rate := tick_rate / FireDivider
-		if (tick_rate < min_delay && fire_max == 1){
-			tick_rate := min_delay
-		}
-	}
-	
-	
+	; Adjust tick_rate according to options
 	if (tick_rate == -1){
 		GuiControl,,CurrFireRate, % "Off"	
 	} else {
+		; If not on a sequence, restrict tick_rate to min_delay
+		if (tick_rate < min_delay && fire_seq_count == 1){
+			tick_rate := min_delay
+		}
 		GuiControl,,CurrFireRate, % tick_rate
 	}
+	
 	; Process any waiting key up events
 	; We should probably do this before processing key downs, so we maintain order, even at high rates
 	if (button_down && (last_tick + min_delay <= loop_time)){
-		if (tick_rate > min_delay || fire_max > 1){
+		if (tick_rate > min_delay || fire_seq_count > 1){
 			button_down := 0
 			set_fire_state(button_down)
 			if (PlayDebugBeeps){
@@ -310,7 +308,7 @@ reset_vars:
 
 send_key_down(){
 	global fire_cur
-	global fire_max
+	global fire_seq_count
 	global fire_sequence
 	global button_down
 	
@@ -321,7 +319,7 @@ send_key_down(){
 	
 send_key_up(){
 	global fire_cur
-	global fire_max
+	global fire_seq_count
 	global fire_sequence
 	global button_down
 
@@ -329,7 +327,7 @@ send_key_up(){
 	Send % "{" fire_sequence[fire_cur] " up}"
 	
 	fire_cur := fire_cur + 1
-	if (fire_cur > fire_max){
+	if (fire_cur > fire_seq_count){
 		fire_cur := 1
 	}
 
@@ -353,19 +351,19 @@ option_changed_hook(){
 	global FireSequence
 	global fire_sequence
 	global fire_cur
-	global fire_max
+	global fire_seq_count
 	
 	; New
 	set_fire_state(0)	; init the output display
 	
 	; Old
 	
-	fire_max := 0
+	fire_seq_count := 0
 	StringSplit, tmp, FireSequence, `,
 	fire_sequence := []
 	Loop, % tmp0
 	{
-		fire_max := fire_max + 1
+		fire_seq_count := fire_seq_count + 1
 		fire_sequence[A_index] := tmp%A_Index%
 	}
 	
