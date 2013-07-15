@@ -21,7 +21,7 @@ ADHD.config_about({name: "Analog to Digital", version: 1.3, author: "evilC", lin
 ADHD.config_default_app("CryENGINE")
 
 ; GUI size
-ADHD.config_size(375,270)
+ADHD.config_size(375,335)
 
 ; We need no actions, so disable warning
 ADHD.config_ignore_noaction_warning()
@@ -42,38 +42,51 @@ Gui, Tab, 1
 
 axis_list_ahk := Array("X","Y","Z","R","U","V")
 
-Gui, Add, Text, x5 yp+25, Joystick: ID
+Gui, Add, GroupBox, x5 yp+25 R1 W365 R3 section, Input Configuration
+Gui, Add, Text, x15 ys+20, Joystick ID
 ADHD.gui_add("DropDownList", "JoyID", "xp+60 yp-5 W50", "1|2|3|4|5|6|7|8", "1")
 
-Gui, Add, Text, xp+60 yp+5, Axis
-ADHD.gui_add("DropDownList", "JoyAxis", "xp+40 yp-5 W50", "1|2|3|4|5|6", "1")
+Gui, Add, Text, xp+60 ys+20, Axis
+ADHD.gui_add("DropDownList", "JoyAxis", "xp+30 yp-5 W50", "1|2|3|4|5|6", "1")
 
 ADHD.gui_add("CheckBox", "InvertAxis", "xp+60  yp+5", "Invert Axis", 0)
 
-Gui, Add, Text, x5 yp+30, Use Half Axis
-ADHD.gui_add("DropDownList", "HalfAxis", "xp+120 yp-5 W50", "None|Low|High", "None")
+Gui, Add, Text, x15 ys+50, Use Half Axis
+ADHD.gui_add("DropDownList", "HalfAxis", "xp80 yp-5 W50", "None|Low|High", "None")
+HalfAxis_TT := "Use only half the axis - eg for XBOX left trigger, use ""High"""
 
-Gui, Add, Text, x5 yp+30, Fire Sequence
-ADHD.gui_add("Edit", "FireSequence", "xp+120 yp-5 W50", "", "Space")
-Gui, Add, Text, xp+70 yp+2, AHK key names. ie "Space" not " "
+Gui, Add, GroupBox, x5 yp+40 R1 W365 R1.2 section, Output Configuration
+Gui, Add, Text, x15 ys+20, Fire Sequence
+ADHD.gui_add("Edit", "FireSequence", "xp+120 yp-5 W80", "", "Space")
+FireSequence_TT := "One key or a sequence of keys separated by commas, eg 1,2,3,4`nAHK key names. ie ""Space"" not "" """
 
-Gui, Add, Text, x5 yp+30, Fire Rate Divider
-ADHD.gui_add("Edit", "FireDivider", "xp+120 yp-5 W50", "", "1")
-Gui, Add, Text, xp+70 yp+5, Set to 1 to disable, not 0
+Gui, Add, GroupBox, x5 yp+30 R1 W365 section, Fire Rate
+Gui, Add, Text, x15 ys+15, Min
+ADHD.gui_add("Edit", "FireRateMin", "xp+50 yp-5 W50", "", "0")
+FireRateMin_TT := "Minimum Fire Rate (in ms) Default is 0"
 
-Gui, Add, Text, x5 yp+25, Current axis value
+Gui, Add, Text, xp+70 ys+15, Max
+ADHD.gui_add("Edit", "FireRateMax", "xp+40 yp-5 W50", "", "1000")
+FireRateMax_TT := "Maximum Fire Rate (in ms) Default is 1000"
+
+Gui, Add, Text, xp+70 ys+15, Bands
+ADHD.gui_add("Edit", "FireRateBands", "xp+40 yp-5 W50", "", "0")
+FireRateBands_TT := ""
+
+Gui, Add, GroupBox, x5 yp+30 R3.5 W365 section, Debugging
+Gui, Add, Text, x15 ys+15, Current axis value
 Gui, Add, Edit, xp+120 yp-2 W50 R1 vAxisValueIn Disabled,
 
-Gui, Add, Text, x5 yp+25, Adjusted axis value
+Gui, Add, Text, xp+60 ys+15, Adjusted axis value
 Gui, Add, Edit, xp+120 yp-2 W50 R1 vAxisValueOut Disabled,
 
-Gui, Add, Text, x5 yp+25, Current fire rate (ms)
+Gui, Add, Text, x15 yp+25, Current fire rate (ms)
 Gui, Add, Edit, xp+120 yp-2 W50 R1 vCurrFireRate Disabled,
 
 Gui, Add, Text, xp+70 yp+2, Fire State: 
 Gui, Add, Text, xp+50 yp W80 vFireState,
 
-Gui, Add, CheckBox, x5 yp+25 vPlayDebugBeeps gdebug_beep_changed, Play debug beeps
+Gui, Add, CheckBox, x15 yp+25 vPlayDebugBeeps gdebug_beep_changed, Play debug beeps
 
 
 ; End GUI creation section
@@ -117,7 +130,6 @@ Loop, {
 	} else {
 		; set tick rate off
 		tick_rate := -1
-		tooltip,
 	}
 	
 	; Adjust tick_rate according to options
@@ -192,7 +204,7 @@ Loop, {
 	axis := round(axis,2)
 	GuiControl,,AxisValueOut, % axis
 	time_on := round(axis * 10, 2)
-	time_on := time_on / FireDivider
+	time_on := time_on / FireRateMin
 	;GuiControl,,CurrFireRate, % round(time_on)
 	
 	; Check that the amount of time we need to hold the button is more than the minimum delay
@@ -232,6 +244,10 @@ Loop, {
 	*/
 }
 return
+
+test(){
+	;soundbeep
+}
 
 ; Conform the input value from an axis to a range between 0 and 100
 ; Handles invert, half axis usage (eg xbox left trigger) etc
