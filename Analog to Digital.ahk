@@ -55,7 +55,7 @@ Gui, Add, Text, x15 ys+50, Use Half Axis
 ADHD.gui_add("DropDownList", "HalfAxis", "xp80 yp-5 W50", "None|Low|High", "None")
 HalfAxis_TT := "Use only half the axis - eg for XBOX left trigger, use ""High"""
 
-Gui, Add, GroupBox, x5 yp+40 R1 W365 R1.2 section, Output Configuration
+Gui, Add, GroupBox, x5 yp+35 R1 W365 R1.2 section, Output Configuration
 Gui, Add, Text, x15 ys+20, Fire Sequence
 ADHD.gui_add("Edit", "FireSequence", "xp+120 yp-5 W80", "", "Space")
 FireSequence_TT := "One key or a sequence of keys separated by commas, eg 1,2,3,4`nAHK key names. ie ""Space"" not "" """
@@ -78,12 +78,12 @@ Gui, Add, Text, x15 ys+15, Current axis value
 Gui, Add, Edit, xp+120 yp-2 W50 R1 vAxisValueIn Disabled,
 
 Gui, Add, Text, xp+60 ys+15, Adjusted axis value
-Gui, Add, Edit, xp+120 yp-2 W50 R1 vAxisValueOut Disabled,
+Gui, Add, Edit, xp+100 yp-2 W50 R1 vAxisValueOut Disabled,
 
 Gui, Add, Text, x15 yp+25, Current fire rate (ms)
 Gui, Add, Edit, xp+120 yp-2 W50 R1 vCurrFireRate Disabled,
 
-Gui, Add, Text, xp+70 yp+2, Fire State: 
+Gui, Add, Text, xp+60 yp+2, Fire State: 
 Gui, Add, Text, xp+50 yp W80 vFireState,
 
 Gui, Add, CheckBox, x15 yp+25 vPlayDebugBeeps gdebug_beep_changed, Play debug beeps
