@@ -105,28 +105,22 @@ ADHD.finish_startup()
 Loop, {
 	; Store time at start of tick to try and keep calculations and timings constant
 	loop_time := A_TickCount
+	; Conform the axis to 1 to 100
 	axis := conform_axis()
 	
 	if (axis > 0){
 		tick_rate := (100 - axis) * 10
+		GuiControl,,CurrFireRate, % round(tick_rate)
+
 	} else {
 		; set tick rate to 0
-		tick_rate := 0
-	}
-	
-	; Process any waiting key down events
-	if (tick_rate > 0 && (last_tick + tick_rate <= loop_time)){
-		if (button_down){
-			;soundbeep, 500, 10
-		} else {
-			last_tick := loop_time
-			button_down := 1
-			tooltip, down
-			soundbeep, 500, 20
-		}
+		tick_rate := -1
+		GuiControl,,CurrFireRate, % "Off"
+		tooltip,
 	}
 	
 	; Process any waiting key up events
+	; We should probably do this before processing key downs, so we maintain order, even at high rates
 	if (button_down && (last_tick + min_delay <= loop_time)){
 		if (axis != 100 || fire_sequence.MaxIndex() > 1){
 			button_down := 0
@@ -134,7 +128,20 @@ Loop, {
 		}
 	}
 	
-	Sleep, 10
+	; Process any waiting key down events
+	;tooltip, % "tick_rate: " tick_rate " last_tick: " last_tick " loop_time: " loop_time
+	; Conditions for sending key down:
+	; Button is not already down (could be at 100% and key ups not getting sent, so dont send key downs
+	; tick_rate is not disabled
+	; it is time for another tick
+	if (!button_down && tick_rate != -1 && (last_tick + tick_rate <= loop_time)){
+		last_tick := loop_time
+		button_down := 1
+		tooltip, down
+	}
+	
+	
+	Sleep, 1
 	
 	/*
 	; How many ms in a second do we need to be holding the button?
