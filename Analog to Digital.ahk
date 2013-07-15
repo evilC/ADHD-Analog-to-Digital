@@ -76,9 +76,11 @@ Gui, Add, Text, xp+70 ys+20, Min (Fast)
 ADHD.gui_add("Edit", "FireRateMin", "xp+50 yp-2 W50", "", "0")
 FireRateMin_TT := "Minimum Fire Rate (in ms) Default is 0"
 
+/*
 Gui, Add, Text, xp+70 ys+20, Bands
 ADHD.gui_add("Edit", "FireRateBands", "xp+40 yp-2 W50", "", "0")
 FireRateBands_TT := "Split the axis up into a number of sections.`neg setting 10 would split the output into 10 blocks - 10,20,30% etc.`nUse 0 to turn off."
+*/
 
 Gui, Add, GroupBox, x5 yp+35 R3.5 W365 section, Debugging
 Gui, Add, Text, x15 ys+15, Current axis value
@@ -275,7 +277,6 @@ conform_axis(){
 	global InvertAxis
 	global HalfAxis
 	global DeadZone
-	global FireRateBands
 	
 	tmp := JoyID "Joy" axis_list_ahk[JoyAxis]
 	GetKeyState, axis, % tmp
@@ -301,12 +302,13 @@ conform_axis(){
 		}
 	}
 	; axis is now conformed to 0-100
-	
+
+	/*
 	if (FireRateBands != 0 && FireRateBands != ""){
 		bandsize := 100 / FireRateBands
-		axis := ceil(axis / bandsize) * bandsize
-		
+		axis := ceil(axis / bandsize) * bandsize		
 	}
+	*/
 	
 	if (DeadZone != 0 && DeadZone != ""){
 		axis := (100 / (100 - DeadZone)) * (axis - DeadZone)
