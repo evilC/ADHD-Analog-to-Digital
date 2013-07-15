@@ -21,7 +21,7 @@ ADHD.config_about({name: "Analog to Digital", version: 1.3, author: "evilC", lin
 ADHD.config_default_app("CryENGINE")
 
 ; GUI size
-ADHD.config_size(375,260)
+ADHD.config_size(375,270)
 
 ; We need no actions, so disable warning
 ADHD.config_ignore_noaction_warning()
@@ -73,6 +73,7 @@ Gui, Add, Edit, xp+120 yp-2 W50 R1 vCurrFireRate Disabled,
 Gui, Add, Text, xp+70 yp+2, Fire State: 
 Gui, Add, Text, xp+50 yp W80 vFireState,
 
+Gui, Add, CheckBox, x5 yp+25 vPlayDebugBeeps gdebug_beep_changed, Play debug beeps
 
 
 ; End GUI creation section
@@ -119,24 +120,28 @@ Loop, {
 		tooltip,
 	}
 	
-	if (tick_rate != -1 && tick_rate < min_delay && fire_max == 1){
-		tick_rate := min_delay
+	if (tick_rate != -1){
+		tick_rate := tick_rate / FireDivider
+		if (tick_rate < min_delay && fire_max == 1){
+			tick_rate := min_delay
+		}
 	}
+	
 	
 	if (tick_rate == -1){
 		GuiControl,,CurrFireRate, % "Off"	
 	} else {
 		GuiControl,,CurrFireRate, % tick_rate
 	}
-	tooltip, 
 	; Process any waiting key up events
 	; We should probably do this before processing key downs, so we maintain order, even at high rates
 	if (button_down && (last_tick + min_delay <= loop_time)){
 		if (tick_rate > min_delay || fire_max > 1){
 			button_down := 0
 			set_fire_state(button_down)
-			tooltip, % "UP: " tick_rate ", " min_delay
-			soundbeep, 750, 20
+			if (PlayDebugBeeps){
+				soundbeep, 750, 20
+			}
 		}
 	}
 	
@@ -150,8 +155,9 @@ Loop, {
 		last_tick := loop_time
 		button_down := 1
 		set_fire_state(button_down)
-		soundbeep, 500, 20
-		tooltip, % "DOWN: " tick_rate ", " min_delay
+		if (PlayDebugBeeps){
+			soundbeep, 500, 20
+		}
 	}
 	
 	
@@ -284,6 +290,11 @@ set_fire_state(state){
 		GuiControl,,FireState, Up
 	}
 }
+
+; Pull value through for debug beep without triggering a gui submit
+debug_beep_changed:
+	GuiControlGet, PlayDebugBeeps
+	return
 
 /*
 reset_vars:
