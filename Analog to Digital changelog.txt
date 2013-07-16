@@ -4,7 +4,10 @@ Key:
 = : Change / Fix
 + : Added feature
 
-2.1 17th Jul 2013
+2.2 16th Jul 2013
+= Made labels for min and max make sense
+
+2.1 16th Jul 2013
 = Max and Min had got swapped, sorry...
 
 2.0 16th Jul 2013

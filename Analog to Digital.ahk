@@ -15,7 +15,7 @@ SetKeyDelay, 0, 50
 
 ; Stuff for the About box
 
-ADHD.config_about({name: "Analog to Digital", version: 2.1, author: "evilC", link: "<a href=""http://mwomercs.com/forums/topic/127120-analog-to-digital-analog-jump-jets-variable-fire-rate-gatling-gun-ac2"">Homepage</a>"})
+ADHD.config_about({name: "Analog to Digital", version: 2.2, author: "evilC", link: "<a href=""http://mwomercs.com/forums/topic/127120-analog-to-digital-analog-jump-jets-variable-fire-rate-gatling-gun-ac2"">Homepage</a>"})
 ; The default application to limit hotkeys to.
 ; Starts disabled by default, so no danger setting to whatever you want
 ADHD.config_default_app("CryENGINE")
@@ -68,11 +68,11 @@ ADHD.gui_add("Edit", "FireSequence", "xp+120 yp-5 W80", "", "Space")
 FireSequence_TT := "One key or a sequence of keys separated by commas, eg 1,2,3,4`nAHK key names. ie ""Space"" not "" """
 
 Gui, Add, GroupBox, x5 yp+30 R1.4 W365 section, Fire Rate (in ms, lower number is faster fire!)
-Gui, Add, Text, x15 ys+20, Min (High Number!)
+Gui, Add, Text, x15 ys+20, Min (Fastest Rate!)
 ADHD.gui_add("Edit", "FireRateMin", "xp+100 yp-2 W50", "", 0)
 FireRateMin_TT := "Minimum Fire Rate (in ms) Default is 0"
 
-Gui, Add, Text, xp+70 ys+20, Max (Low Number!)
+Gui, Add, Text, xp+70 ys+20, Max (Slowest Rate!)
 ADHD.gui_add("Edit", "FireRateMax", "xp+100 yp-2 W50", "", 1000)
 FireRateMax_TT := "Maximum Fire Rate (in ms) Default is 1000"
 

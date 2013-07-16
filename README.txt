@@ -30,8 +30,8 @@ Fire Sequence - a comma separated list of AHK key names to hit
 eg for just space, enter "Space", To hit 3,4,5,6 in sequence, enter "3,4,5,6" (Without the quotes)
 
 Fire Rate
-Min (High Number!) - The slowest rate (in ms) at which to fire - ie the rate to use when the axis is at 1%
-Max (Low Number!) - The fastest rate (in ms) at which to fire - ie the rate to use when the axis is at 100%
+Min (Fastest Rate!) - The fastest rate (in ms) at which to fire - ie the rate to use when the axis is at 100%
+Max (Slowest Rate!) - The slowest rate (in ms) at which to fire - ie the rate to use when the axis is at 1%
 
 Useful readouts:
 ================
@@ -59,7 +59,7 @@ Fire Sequence: Space
 Settings for 500->125 ms fire rate (MWO 4xAC2):
 ==========================================
 (Add a slack of 5ms to each for safety)
-Rate Min: 500 Max: 130 (5ms above 125 for reliability)
+Rate Min: 130 Max: 500 (5ms above 125 for reliability)
 Fire Sequence: 3,4,5,6
 
 
