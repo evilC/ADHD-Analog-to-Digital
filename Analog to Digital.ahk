@@ -15,7 +15,7 @@ SetKeyDelay, 0, 50
 
 ; Stuff for the About box
 
-ADHD.config_about({name: "Analog to Digital", version: 2.0, author: "evilC", link: "<a href=""http://mwomercs.com/forums/topic/127120-analog-to-digital-analog-jump-jets-variable-fire-rate-gatling-gun-ac2"">Homepage</a>"})
+ADHD.config_about({name: "Analog to Digital", version: 2.1, author: "evilC", link: "<a href=""http://mwomercs.com/forums/topic/127120-analog-to-digital-analog-jump-jets-variable-fire-rate-gatling-gun-ac2"">Homepage</a>"})
 ; The default application to limit hotkeys to.
 ; Starts disabled by default, so no danger setting to whatever you want
 ADHD.config_default_app("CryENGINE")
@@ -127,7 +127,7 @@ Loop, {
 	
 	if (axis){
 		; Adjust tick rate to fall between specified maximums and minimums
-		tick_rate := round(FireRateMin - ((FireRateMin - FireRateMax) * (axis / 100)))
+		tick_rate := round(FireRateMax - ((FireRateMax - FireRateMin) * (axis / 100)))
 	} else {
 		; set tick rate off
 		tick_rate := -1

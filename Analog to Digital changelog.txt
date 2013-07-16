@@ -4,6 +4,9 @@ Key:
 = : Change / Fix
 + : Added feature
 
+2.1 17th Jul 2013
+= Max and Min had got swapped, sorry...
+
 2.0 16th Jul 2013
 + Completely new timing routine
 + Min and Max rate options
