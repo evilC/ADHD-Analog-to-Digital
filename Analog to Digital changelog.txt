@@ -4,6 +4,13 @@ Key:
 = : Change / Fix
 + : Added feature
 
+2.0 16th Jul 2013
++ Completely new timing routine
++ Min and Max rate options
++ Deadzone setting
+= UI cleanup, lots of tooltips added
+= Readouts (Current Fire Rate etc) now make sense
+
 1.3 15th Jul 2013
 = Removed the "Send key up when at 100% rate" option.
 This is now calculated automatically. If the key is due to be held 100% of the time, a key up is not sent if only sending a single key.

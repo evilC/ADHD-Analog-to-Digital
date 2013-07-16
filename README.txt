@@ -24,11 +24,14 @@ Use Half Axis - allows you to use only half the axis (ie from the mid-point to e
 
 Invert Axis - allows you to invert the input (Probably useless in combination with Use Half Axis)
 
+DeadZone - allows you to set a limit below which the axis will not register.
+
 Fire Sequence - a comma separated list of AHK key names to hit
 eg for just space, enter "Space", To hit 3,4,5,6 in sequence, enter "3,4,5,6" (Without the quotes)
 
-Fire Rate Divider - A divider to allow you to adjust max speed.
-eg to fire at a max of once per 250ms, set it to 2.5 (1000*2.5 = 250)
+Fire Rate
+Min (High Number!) - The slowest rate (in ms) at which to fire - ie the rate to use when the axis is at 1%
+Max (Low Number!) - The fastest rate (in ms) at which to fire - ie the rate to use when the axis is at 100%
 
 Useful readouts:
 ================
@@ -50,12 +53,13 @@ Use Half Axis: Low for Right trigger, High for Left trigger
 
 Settings for Jumpjets:
 ======================
-Divider: 1
+Rate Min: 0 Max: 200
 Fire Sequence: Space
 
-Settings for 250 ms fire rate (MWO 4xAC2):
+Settings for 500->125 ms fire rate (MWO 4xAC2):
 ==========================================
-Divider: 2.5
+(Add a slack of 5ms to each for safety)
+Rate Min: 500 Max: 130 (5ms above 125 for reliability)
 Fire Sequence: 3,4,5,6
 
 
