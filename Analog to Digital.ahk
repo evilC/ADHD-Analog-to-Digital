@@ -163,8 +163,12 @@ Loop, {
 	; Process any waiting key up events
 	; We should probably do this before processing key downs, so we maintain order, even at high rates
 	if (button_down && (last_tick + min_delay <= loop_time)){
-		if (tick_rate > min_delay || fire_seq_count > 1){
-			button_down := 0
+		; Let key ups happen if tick_rate off, not at max rate, or if firing a sequence
+		if (tick_rate == -1 || tick_rate > min_delay || fire_seq_count > 1){
+			;button_down := 0
+			if (allowed_fire){
+				send_key_up()
+			}
 			if (PlayDebugBeeps){
 				soundbeep, 750, 20
 			}
@@ -176,14 +180,22 @@ Loop, {
 	; Process any waiting key down events
 	;tooltip, % "tick_rate: " tick_rate " last_tick: " last_tick " loop_time: " loop_time
 	; Conditions for sending key down:
+	; We are not at max rate (Or we are sending a sequence of keys)
 	; Button is not already down (could be at 100% and key ups not getting sent, so dont send key downs
 	; tick_rate is not disabled
 	; it is time for another tick
 	if (!button_down && tick_rate != -1 && (last_tick + tick_rate <= loop_time)){
-		last_tick := loop_time
-		button_down := 1
-		if (PlayDebugBeeps){
-			soundbeep, 500, 20
+		; Let key downs happen if not at max rate or firing a sequence
+		if (tick_rate > min_delay || fire_seq_count > 1){
+			last_tick := loop_time
+			;button_down := 1
+			if (allowed_fire){
+				send_key_down()
+			}
+			if (PlayDebugBeeps){
+				soundbeep, 500, 20
+			}
+			
 		}
 	}
 	
@@ -263,10 +275,6 @@ Loop, {
 	*/
 }
 return
-
-test(){
-	;soundbeep
-}
 
 ; Conform the input value from an axis to a range between 0 and 100
 ; Handles invert, half axis usage (eg xbox left trigger) etc
@@ -361,6 +369,14 @@ reset_vars:
 	return
 */
 
+reset_vars:
+	if (button_down){
+		send_key_up()
+	}
+	tick_rate := 0
+	last_tick := 0
+	return
+	
 send_key_down(){
 	global fire_cur
 	global fire_seq_count
@@ -408,10 +424,7 @@ option_changed_hook(){
 	global fire_cur
 	global fire_seq_count
 	
-	; New
 	set_fire_state(0)	; init the output display
-	
-	; Old
 	
 	fire_seq_count := 0
 	StringSplit, tmp, FireSequence, `,
@@ -425,7 +438,7 @@ option_changed_hook(){
 	; Reset allowed_fire if we enabled/disabled limit app
 	allowed_fire := !ADHD.config_get_default_app_on()
 	fire_cur := 1
-	;Gosub, reset_vars
+	Gosub, reset_vars
 	
 	
 }
