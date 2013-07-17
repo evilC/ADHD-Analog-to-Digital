@@ -4,6 +4,9 @@ Key:
 = : Change / Fix
 + : Added feature
 
+2.3 17th Jul 2013
+= Script should be a bit more reliable. Sometimes when you went from 0 to full straight away, down would never get sent
+
 2.2 16th Jul 2013
 = Made labels for min and max make sense
 

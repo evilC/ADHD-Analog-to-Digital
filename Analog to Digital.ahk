@@ -15,7 +15,7 @@ SetKeyDelay, 0, 50
 
 ; Stuff for the About box
 
-ADHD.config_about({name: "Analog to Digital", version: 2.2, author: "evilC", link: "<a href=""http://mwomercs.com/forums/topic/127120-analog-to-digital-analog-jump-jets-variable-fire-rate-gatling-gun-ac2"">Homepage</a>"})
+ADHD.config_about({name: "Analog to Digital", version: 2.3, author: "evilC", link: "<a href=""http://mwomercs.com/forums/topic/127120-analog-to-digital-analog-jump-jets-variable-fire-rate-gatling-gun-ac2"">Homepage</a>"})
 ; The default application to limit hotkeys to.
 ; Starts disabled by default, so no danger setting to whatever you want
 ADHD.config_default_app("CryENGINE")
@@ -172,16 +172,19 @@ Loop, {
 	; it is time for another tick
 	if (!button_down && tick_rate != -1 && (last_tick + tick_rate <= loop_time)){
 		; Let key downs happen if not at max rate or firing a sequence
-		if (tick_rate > min_delay || fire_seq_count > 1){
-			last_tick := loop_time
-			;button_down := 1
-			if (allowed_fire){
-				send_key_down()
-			}
-			if (PlayDebugBeeps){
-				soundbeep, 500, 20
-			}
+		;if (tick_rate > min_delay || fire_seq_count > 1){
+
+		; No check for whether at max rate etc. Whether key downs repeats is controlled by key up
+		; Seeing as we cannot key down until we have keyed up, we only need do these checks in key up
+		last_tick := loop_time
+		;button_down := 1
+		if (allowed_fire){
+			send_key_down()
 		}
+		if (PlayDebugBeeps){
+			soundbeep, 500, 20
+		}
+		;}
 	}
 	
 	set_fire_state(button_down)
